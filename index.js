@@ -73,5 +73,7 @@ function execute() {
             var numCols = matrix[0].length;
             resultSheet.getRange(2, 1, numRows, numCols).setValues(matrix);
         }
+        var res = 'Results found: ' + matrix.length;
+        ss.toast(res, 'Results', 5);
     }
 }
