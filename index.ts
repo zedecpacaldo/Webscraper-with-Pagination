@@ -14,18 +14,27 @@ function execute() {
   const resultSheet = ss.getSheetByName('Results');
 
   var url = mainSheet.getRange('B1').getValue();
-  const response = UrlFetchApp.fetch(url);
-  const str = response.getContentText();
-  const obj = JSON.parse(str);
 
-  const matrix: string[][] = [];
-
-  for(let elem of obj.data.objects) {
-    matrix.push([elem.date, elem.problem, elem.user, elem.language, elem.result, elem.points]);
+  if (!url) {
+    ss.toast('No API endpoint specified', 'Error', 5);
+  } 
+  else
+  {
+    const response = UrlFetchApp.fetch(url);
+    const str = response.getContentText();
+    const obj = JSON.parse(str);
+  
+    const matrix: string[][] = [];
+  
+    for(let elem of obj.data.objects) {
+      matrix.push([elem.date, elem.problem, elem.user, elem.language, elem.result, elem.points]);
+    }
+  
+    const numRows = matrix.length;
+    const numCols = matrix[0].length;
+    resultSheet.getRange(2, 1, numRows, numCols).setValues(matrix);
   }
 
-  const numRows = matrix.length;
-  const numCols = matrix[0].length;
-  resultSheet.getRange(2, 1, numRows, numCols).setValues(matrix);
+  
 
 }
