@@ -4,8 +4,30 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
   // Or DocumentApp or FormApp.
   ui.createMenu('Custom Menu')
-      .addItem('Execute', 'execute')
+      .addItem('Fetch Data', 'execute')
+      .addItem('Clear Results', 'clearRes')
       .addToUi();
+}
+
+function clearRes() {
+  var ui = SpreadsheetApp.getUi();
+  var response = ui.alert('Clear Results', 'Are you sure you want to clear the results?', ui.ButtonSet.YES_NO);
+  
+  if (response == ui.Button.NO) {
+    return;
+  } 
+
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+  const resultSheet = ss.getSheetByName('Results');
+  
+  const clearOptions = {
+    contentsOnly: true
+  };
+
+  resultSheet.getRange('A2:F2').clear(clearOptions);
+  if(resultSheet.getMaxRows() > 2) {
+    resultSheet.deleteRows(3, resultSheet.getMaxRows()-2)
+  }
 }
 
 function execute() {
@@ -27,7 +49,12 @@ function execute() {
     const clearOptions = {
       contentsOnly: true
     };
-  
+    
+    resultSheet.getRange('A2:F2').clear(clearOptions);
+    if(resultSheet.getMaxRows() > 2) {
+      resultSheet.deleteRows(3, resultSheet.getMaxRows()-2)
+    }
+
     if(user || lang || prob) {
       url += "?";
     }
@@ -48,11 +75,6 @@ function execute() {
   
     if(prob) {
       url += "problem=" + prob;
-    }
-
-    resultSheet.getRange('A2:F2').clear(clearOptions);
-    if(resultSheet.getMaxRows() > 2) {
-      resultSheet.deleteRows(3, resultSheet.getMaxRows()-2)
     }
   
     const response = UrlFetchApp.fetch(url);
