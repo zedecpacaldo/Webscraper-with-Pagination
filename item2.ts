@@ -1,4 +1,3 @@
-// After it is working, check video at 1:40:41
 
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
